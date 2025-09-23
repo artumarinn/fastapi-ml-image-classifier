@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from tkinter import image_names
 
 import numpy as np
 import redis
@@ -48,19 +49,23 @@ def predict(image_name):
 
     # Load image
     full_img_path = os.path.join(settings.UPLOAD_FOLDER, image_name)
-    img = image.load_img(image_name, target_size = (224, 224))
+    img = image.load_img(full_img_path, target_size = (224, 224))
 
     # Apply preprocessing (convert to numpy array, match model input dimensions (including batch) and use the resnet50 preprocessing)
     img_array = image.img_to_array(img)
 
     x_batch = np.expand_dims(img_array, axis=0)
-    x_batch = ResNet50.preprocess_input(x_batch)
+    x_batch = preprocess_input(x_batch)
 
     # Get predictions using model methods and decode predictions using resnet50 decode_predictions
     pred = model.predict(x_batch)
 
     # Convert probabilities to float and round it
     probability = float(pred_probability)
+
+    decoded = decode_predictions(pred, top=1)[0][0]
+    class_name = decoded[1]
+    pred_probability = float(decoded[2])
 
     return class_name, pred_probability
 
@@ -91,21 +96,27 @@ def classify_process():
         # Hint: You should be able to successfully implement the communication
         #       code with Redis making use of functions `brpop()` and `set()`.
 
-        def get_new_job()
+        def get_new_job():
         # TODO
         # Take a new job from Redis
-            job = db.brpop()
+            job = db.brpop("service_queue")
+
         # Decode the JSON data for the given job
-            
+            job_data = json.loads(job[1])
+
         # Important! Get and keep the original job ID
+            job_id = job_data["id"]
+            image_name = job_data["image_name"]
 
         # Run the loaded ml model (use the predict() function)
+            prediction, score = predict("image_name")
 
         # Prepare a new JSON with the results
-        output = {"prediction": None, "score": None}
+            output = {"prediction": prediction, "score": score}
 
         # Store the job results on Redis using the original
         # job ID as the key
+            db.set(job_id, json.dumps(output))
 
         # Sleep for a bit
         time.sleep(settings.SERVER_SLEEP)
