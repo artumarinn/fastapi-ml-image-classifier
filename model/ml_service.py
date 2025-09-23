@@ -45,8 +45,8 @@ def predict(image_name):
     """
     class_name = None
     pred_probability = None
-    # TODO: Implement the code to predict the class of the image_name
 
+    # TODO: Implement the code to predict the class of the image_name
     # Load image
     full_img_path = os.path.join(settings.UPLOAD_FOLDER, image_name)
     img = image.load_img(full_img_path, target_size = (224, 224))
@@ -61,11 +61,10 @@ def predict(image_name):
     pred = model.predict(x_batch)
 
     # Convert probabilities to float and round it
-    probability = float(pred_probability)
 
     decoded = decode_predictions(pred, top=1)[0][0]
     class_name = decoded[1]
-    pred_probability = float(decoded[2])
+    pred_probability = round(float(decoded[2]), 4)
 
     return class_name, pred_probability
 
@@ -109,7 +108,7 @@ def classify_process():
             image_name = job_data["image_name"]
 
         # Run the loaded ml model (use the predict() function)
-            prediction, score = predict("image_name")
+            prediction, score = predict(image_name)
 
         # Prepare a new JSON with the results
             output = {"prediction": prediction, "score": score}

@@ -1,14 +1,15 @@
-FROM python:3.8.13 as base
+FROM python:3.8.13 AS base
 
 
 # Append /home/app/.local/bin/ to PATH variable because
 # gunicorn is installed there.
-ENV PYTHONPATH=$PYTHONPATH:/src/
+ENV PYTHONPATH=/src
+
 
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 
-ENV PYTHONPATH=$PYTHONPATH:/src/
+ENV PYTHONPATH=/src
 
 COPY ./ /src/
 
