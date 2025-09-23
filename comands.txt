@@ -1,0 +1,16 @@
+# Levantar docker compose de la db
+- docker compose up db
+
+cd api
+
+- docker compose up  # levantar pupulate
+
+# entrar al contenedor
+
+- docker exec -ti id-conteiner  bash
+
+# posgres
+
+- psql -U postgres -d sp3(name db)
+
+

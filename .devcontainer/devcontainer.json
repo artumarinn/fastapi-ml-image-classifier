@@ -1,0 +1,40 @@
+{
+	// Nombre para tu entorno de Dev Container.
+	"name": "sp03_devcontainer",
+
+	// Rutas a tus archivos de Docker Compose. La ruta es relativa a este archivo.
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+
+	// El servicio del docker-compose.yml al que VS Code se conectará.
+	// Aquí es donde desarrollarás tu código.
+	"service": "api",
+
+	// La carpeta dentro del contenedor que se abrirá en VS Code.
+	// Tu código local se montará aquí. '/src' es un estándar común.
+	"workspaceFolder": "/src",
+
+	// Personalizaciones de VS Code para este entorno.
+	"customizations": {
+		"vscode": {
+			// Extensiones recomendadas para instalar dentro del contenedor.
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	},
+
+	// Opcional: Redirige puertos automáticamente. Aunque ya está en tu compose,
+	// esto ayuda a VS Code a reconocerlos. El puerto 5000 es el que usa la API internamente.
+	"forwardPorts": [5000],
+
+	// Opcional: Un comando a ejecutar después de crear el contenedor.
+	// Útil si necesitas instalar dependencias de desarrollo que no están en la imagen base.
+	// "postCreateCommand": "pip install flake8 black --user",
+
+	// Indica a VS Code que apague los contenedores del compose cuando se cierre la ventana.
+	"shutdownAction": "stopCompose"
+}
