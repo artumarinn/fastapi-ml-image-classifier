@@ -45,13 +45,14 @@ async def get_file_hash(file):
     """
     # TODO: Implement the get_file_hash function
     # Current implementation will return the original file name.
-
     # Read file content and generate md5 hash (Check: https://docs.python.org/3/library/hashlib.html#hashlib.md5)
+    file_content = file.read()
+    file_hash = hashlib.md5(file_content).hexdigest()
 
     # Return file pointer to the beginning
+    file.seek(0)
 
     # Add original file extension
+    ext = os.path.splitext(file_content)[1].lower()
 
-    
-
-    return file.filename
+    return f"{file_hash}{ext}"
