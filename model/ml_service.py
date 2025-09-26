@@ -96,26 +96,29 @@ def classify_process():
         #       code with Redis making use of functions `brpop()` and `set()`.
 
         def get_new_job():
-        # TODO
-        # Take a new job from Redis
+            # TODO
+            # Take a new job from Redis
             job = db.brpop("service_queue")
 
-        # Decode the JSON data for the given job
+            # Decode the JSON data for the given job
             job_data = json.loads(job[1])
 
-        # Important! Get and keep the original job ID
+            # Important! Get and keep the original job ID
             job_id = job_data["id"]
             image_name = job_data["image_name"]
 
-        # Run the loaded ml model (use the predict() function)
+            # Run the loaded ml model (use the predict() function)
             prediction, score = predict(image_name)
 
-        # Prepare a new JSON with the results
+            # Prepare a new JSON with the results
             output = {"prediction": prediction, "score": score}
 
-        # Store the job results on Redis using the original
-        # job ID as the key
+            # Store the job results on Redis using the original
+            # job ID as the key
             db.set(job_id, json.dumps(output))
+
+        # Call the function to process a new job
+        get_new_job()
 
         # Sleep for a bit
         time.sleep(settings.SERVER_SLEEP)

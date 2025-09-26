@@ -115,7 +115,7 @@ Let's take a quick overview of each module:
     - `api/app/model/router.py`: This code sets up a FastAPI router for handling model predictions. The `predict` endpoint allows users to upload an image file and get predictions from a model:
 
         - **File Handling**: The uploaded file is saved to a designated folder after computing its hash.
-        - **Prediction**: The file hash is used to make predictions using the `model_predict` function.
+        - **Prediction**: The file hash i- dfunction.
         - **Response**: Returns a `PredictResponse` containing the success status, prediction result, score, and file name.
         The router requires user authentication and uses utility functions for file operations.
     - `api/app/model/services.py`: This code interacts with a Redis database to handle model prediction jobs:

@@ -51,6 +51,9 @@ class APIUser(HttpUser):
     @task(1)
     def predict(self):
         token = login("admin@example.com", "admin")
+        if not token:
+            print("Login failed, cannot test predict endpoint.")
+            return
         files = [("file", ("dog.jpeg", open("dog.jpeg", "rb"), "image/jpeg"))]
         headers = {"Authorization": f"Bearer {token}"}
         payload = {}

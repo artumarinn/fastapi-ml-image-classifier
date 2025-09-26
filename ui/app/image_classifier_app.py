@@ -20,19 +20,39 @@ def login(username: str, password: str) -> Optional[str]:
     # TODO: Implement the login function
     # Steps to Build the `login` Function:
     #  1. Construct the API endpoint URL using `API_BASE_URL` and `/login`.
+    url = f"{API_BASE_URL}/login"
+
     #  2. Set up the request headers with `accept: application/json` and
     #     `Content-Type: application/x-www-form-urlencoded`.
+    headers = {
+        "accept" : "application/json",
+        "Content-Type" : "application/x-www-form-urlencoded"
+    }
+
     #  3. Prepare the data payload with fields: `grant_type`, `username`, `password`,
     #     `scope`, `client_id`, and `client_secret`.
+    payload = {
+        "grant_type": "",
+        "username": username,
+        "password": password,
+        "scope": "",
+        "client_id": "",
+        "client_secret": ""
+    }
     #  4. Use `requests.post()` to send the API request with the URL, headers,
     #     and data payload.
+    response = requests.post(url, headers=headers, data=payload)
+
     #  5. Check if the response status code is `200`.
-    #  6. If successful, extract the token from the JSON response.
-    #  7. Return the token if login is successful, otherwise return `None`.
+    if response.status_code == 200:
+        #  6. If successful, extract the token from the JSON response.
+        token_data = response.json()
+        return token_data["access_token"]
+    else:
+        #  7. Return the token if login is successful, otherwise return `None`.
+        return None
+    
     #  8. Test the function with various inputs.
-
-    return None
-
 
 def predict(token: str, uploaded_file: Image) -> requests.Response:
     """This function calls the predict endpoint of the API to classify the uploaded
@@ -49,11 +69,20 @@ def predict(token: str, uploaded_file: Image) -> requests.Response:
     # Steps to Build the `predict` Function:
     #  1. Create a dictionary with the file data. The file should be a
     #     tuple with the file name and the file content.
-    #  2. Add the token to the headers.
-    #  3. Make a POST request to the predict endpoint.
-    #  4. Return the response.
-    response = None
+    file_data = {
+        "file": (uploaded_file.name, uploaded_file.getvalue()) 
+    }
 
+    #  2. Add the token to the headers.
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    #  3. Make a POST request to the predict endpoint.
+    url = f"{API_BASE_URL}/model/predict"
+    response = requests.post(url, headers=headers, files=file_data)
+
+    #  4. Return the response.
     return response
 
 
@@ -80,10 +109,21 @@ def send_feedback(
     # 2. Add the token to the headers.
     # 3. Make a POST request to the feedback endpoint.
     # 4. Return the response.
-    response = None
+    data = {
+        "feedback": feedback,
+        "score": score,
+        "predicted_class": prediction,
+        "image_file_name": image_file_name
+    }
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    } 
+
+    url = f"{API_BASE_URL}/feedback"
+    response = requests.post(url, headers=headers, json=data)
 
     return response
-
 
 # Interfaz de usuario
 st.set_page_config(page_title="Image Classifier", page_icon="📷")

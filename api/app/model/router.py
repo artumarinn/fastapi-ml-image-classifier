@@ -26,8 +26,11 @@ async def predict(file: UploadFile, current_user=Depends(get_current_user)):
     # should return `rpse` dict with default values HTTP 400 Bad Request code
     # TODO
 
-    if not file or not utils.allowed_file(file.filename):
+    if not file:
         raise HTTPException(status_code=400, detail="No file provided")
+
+    if not utils.allowed_file(file.filename):
+        raise HTTPException(status_code=400, detail="File type is not supported.")
 
     file_name = await utils.get_file_hash(file)
     rpse["image_file_name"] = file_name 

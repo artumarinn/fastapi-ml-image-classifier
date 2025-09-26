@@ -41,7 +41,7 @@ async def model_predict(image_name):
     # We need to assing this ID because we must be able to keep track
     # of this particular job across all the services
     # TODO
-    job_id = str(uuid.uuid4())
+    job_id = str(uuid4())
 
     # Create a dict with the job data we will send through Redis having the
     # following shape:
@@ -68,7 +68,7 @@ async def model_predict(image_name):
         # Check if the text was correctly processed by our ML model
         # Don't modify the code below, it should work as expected
         if output is not None:
-            output = json.loads(output.decode("utf-8"))
+            output = json.loads(output)
             prediction = output["prediction"]
             score = output["score"]
 

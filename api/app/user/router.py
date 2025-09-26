@@ -21,7 +21,7 @@ async def create_user_registration(
     #  3. If the email doesn't exist, create a new user, see `new_user_register()` function under `services.py`
     #  4. Return the new user object created
 
-    if not validator.verify_email_exist(request.email, database):
+    if not await validator.verify_email_exist(request.email, database):
         new_user = await services.new_user_register(request, database)
         return new_user
     else:
