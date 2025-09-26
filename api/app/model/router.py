@@ -25,9 +25,24 @@ async def predict(file: UploadFile, current_user=Depends(get_current_user)):
     # If user sends an invalid request (e.g. no file provided) this endpoint
     # should return `rpse` dict with default values HTTP 400 Bad Request code
     # TODO
-    rpse["success"] = None
-    rpse["prediction"] = None
-    rpse["score"] = None
-    rpse["image_file_name"] = None
+
+    if not file or not utils.allowed_file(file.filename):
+        raise HTTPException(status_code=400, detail="No file provided")
+
+    file_name = await utils.get_file_hash(file)
+    rpse["image_file_name"] = file_name 
+
+    file_path = os.path.join(config.UPLOAD_FOLDER, file_name)
+    with open(file_path, "wb") as buffer:
+        content = await file.read()
+        buffer.write(content)
+        file.file.seek(0)
+
+    prediction, score = await model_predict(file_name)
+
+    rpse["success"] = True
+    rpse["prediction"] = prediction
+    rpse["score"] = score
+    rpse["image_file_name"] = file_name
 
     return PredictResponse(**rpse)
